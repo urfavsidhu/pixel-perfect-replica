@@ -41,14 +41,35 @@ export async function createAccessRequest(input: RequestAccessInput, ip: string 
   return { ok: true as const, requestId: inserted.data.id };
 }
 
-export async function readAccessRequest(requestId: string) {
+type AccessCertificate = {
+  certificate_id: string;
+  student_name: string;
+  degree: string | null;
+  department: string | null;
+  graduation_year: number | null;
+  grade_or_cgpa: string | null;
+  issue_date: string | null;
+  status: string;
+  trust_score: number;
+};
+
+export type AccessRequestResult = {
+  status: "not_found" | "pending" | "allowed" | "denied" | "expired";
+  expiresAt: string | null;
+  student: { display_id: string; name: string } | null;
+  certificates: AccessCertificate[];
+};
+
+export async function readAccessRequest(requestId: string): Promise<AccessRequestResult> {
   const request = await supabaseAdmin
     .from("access_requests")
     .select("id, status, expires_at, student_id, requester_name")
     .eq("id", requestId)
     .maybeSingle();
 
-  if (!request.data) return { status: "not_found" as const };
+  if (!request.data) {
+    return { status: "not_found", expiresAt: null, student: null, certificates: [] };
+  }
 
   let status = request.data.status;
   if (
@@ -61,7 +82,7 @@ export async function readAccessRequest(requestId: string) {
   }
 
   if (status !== "allowed") {
-    return { status, certificates: [] as unknown[], student: null };
+    return { status, expiresAt: null, student: null, certificates: [] };
   }
 
   const student = await supabaseAdmin
@@ -83,8 +104,8 @@ export async function readAccessRequest(requestId: string) {
   return {
     status,
     expiresAt: request.data.expires_at,
-    student: student.data,
-    certificates: certificates.data ?? [],
+    student: student.data ?? null,
+    certificates: (certificates.data ?? []) as AccessCertificate[],
   };
 }
 
