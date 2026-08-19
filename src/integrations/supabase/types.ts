@@ -14,16 +14,334 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      access_requests: {
+        Row: {
+          access_key_used_hash: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          requester_email: string
+          requester_name: string
+          requester_organization: string | null
+          status: Database["public"]["Enums"]["access_request_status"]
+          student_id: string
+        }
+        Insert: {
+          access_key_used_hash: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          requester_email: string
+          requester_name: string
+          requester_organization?: string | null
+          status?: Database["public"]["Enums"]["access_request_status"]
+          student_id: string
+        }
+        Update: {
+          access_key_used_hash?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          requester_email?: string
+          requester_name?: string
+          requester_organization?: string | null
+          status?: Database["public"]["Enums"]["access_request_status"]
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "access_requests_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          target_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      certificates: {
+        Row: {
+          certificate_hash: string | null
+          certificate_id: string
+          created_at: string
+          degree: string | null
+          department: string | null
+          grade_or_cgpa: string | null
+          graduation_year: number | null
+          id: string
+          institution_id: string | null
+          issue_date: string | null
+          last_verified_at: string | null
+          qr_code_data: string | null
+          revocation_reason: string | null
+          status: Database["public"]["Enums"]["certificate_status"]
+          student_id: string | null
+          student_name: string
+          trust_score: number
+          uploaded_by: Database["public"]["Enums"]["upload_source"]
+          verification_count: number
+        }
+        Insert: {
+          certificate_hash?: string | null
+          certificate_id: string
+          created_at?: string
+          degree?: string | null
+          department?: string | null
+          grade_or_cgpa?: string | null
+          graduation_year?: number | null
+          id?: string
+          institution_id?: string | null
+          issue_date?: string | null
+          last_verified_at?: string | null
+          qr_code_data?: string | null
+          revocation_reason?: string | null
+          status?: Database["public"]["Enums"]["certificate_status"]
+          student_id?: string | null
+          student_name: string
+          trust_score?: number
+          uploaded_by?: Database["public"]["Enums"]["upload_source"]
+          verification_count?: number
+        }
+        Update: {
+          certificate_hash?: string | null
+          certificate_id?: string
+          created_at?: string
+          degree?: string | null
+          department?: string | null
+          grade_or_cgpa?: string | null
+          graduation_year?: number | null
+          id?: string
+          institution_id?: string | null
+          issue_date?: string | null
+          last_verified_at?: string | null
+          qr_code_data?: string | null
+          revocation_reason?: string | null
+          status?: Database["public"]["Enums"]["certificate_status"]
+          student_id?: string | null
+          student_name?: string
+          trust_score?: number
+          uploaded_by?: Database["public"]["Enums"]["upload_source"]
+          verification_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fraud_cases: {
+        Row: {
+          assigned_to: string | null
+          certificate_id: string | null
+          created_at: string
+          id: string
+          issue_description: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["fraud_case_status"]
+        }
+        Insert: {
+          assigned_to?: string | null
+          certificate_id?: string | null
+          created_at?: string
+          id?: string
+          issue_description: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["fraud_case_status"]
+        }
+        Update: {
+          assigned_to?: string | null
+          certificate_id?: string | null
+          created_at?: string
+          id?: string
+          issue_description?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["fraud_case_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fraud_cases_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fraud_cases_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institutions: {
+        Row: {
+          accreditation_id: string | null
+          api_key_hash: string | null
+          contact_email: string | null
+          created_at: string
+          id: string
+          name: string
+          status: string
+        }
+        Insert: {
+          accreditation_id?: string | null
+          api_key_hash?: string | null
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          status?: string
+        }
+        Update: {
+          accreditation_id?: string | null
+          api_key_hash?: string | null
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          access_key_hash: string | null
+          access_key_last_regenerated_at: string | null
+          created_at: string
+          display_id: string
+          email: string
+          id: string
+          institution_id: string | null
+          name: string
+        }
+        Insert: {
+          access_key_hash?: string | null
+          access_key_last_regenerated_at?: string | null
+          created_at?: string
+          display_id: string
+          email: string
+          id: string
+          institution_id?: string | null
+          name: string
+        }
+        Update: {
+          access_key_hash?: string | null
+          access_key_last_regenerated_at?: string | null
+          created_at?: string
+          display_id?: string
+          email?: string
+          id?: string
+          institution_id?: string | null
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      verify_rate_limits: {
+        Row: {
+          ip_address: string
+          request_count: number
+          window_start: string
+        }
+        Insert: {
+          ip_address: string
+          request_count?: number
+          window_start?: string
+        }
+        Update: {
+          ip_address?: string
+          request_count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_institution_id: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      public_verify_certificate: {
+        Args: { _certificate_id: string; _ip: string }
+        Returns: string
+      }
     }
     Enums: {
-      [_ in never]: never
+      access_request_status: "pending" | "allowed" | "denied" | "expired"
+      app_role: "student" | "institution" | "admin"
+      certificate_status: "pending" | "verified" | "revoked" | "rejected"
+      fraud_case_status: "open" | "investigating" | "resolved"
+      upload_source: "self" | "institution"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +468,12 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      access_request_status: ["pending", "allowed", "denied", "expired"],
+      app_role: ["student", "institution", "admin"],
+      certificate_status: ["pending", "verified", "revoked", "rejected"],
+      fraud_case_status: ["open", "investigating", "resolved"],
+      upload_source: ["self", "institution"],
+    },
   },
 } as const
